@@ -38,3 +38,13 @@ void setup_ssl_context(HANDLE serial_handle) {
         read_from_serial(serial_handle);
     }
 }
+
+/* TODO: add client certificate loading 
+
+Takes certificate struct.
+
+AT+CCERTDOWN="clientcert.pem",1220 // change size and send cetificate-pem.crt
+AT+CCERTDOWN="clientkey.pem",1675 // change size and send private.pem.key
+AT+CCERTDOWN="cacert.pem",1188 // change size and send AmazonRootCA1.pem
+
+*/

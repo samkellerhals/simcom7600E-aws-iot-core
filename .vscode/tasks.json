@@ -4,7 +4,7 @@
         "type": "cppbuild",
         "label": "C/C++: g++.exe build active file",
         "command": "C:/Program Files/CodeBlocks/MinGW/bin/g++.exe",
-        "args": ["-g", "${file}", "-o", "${fileDirname}\\${fileBasenameNoExtension}.exe"],
+        "args": ["-g", "${workspaceFolder}\\src\\*.cpp", "-o", "${workspaceFolder}\\${fileBasenameNoExtension}.exe"],
         "options": {
           "cwd": "${fileDirname}"
         },
