@@ -3,22 +3,20 @@
 #include <fstream>
 #include <string>
 #include "utils.h"
-#include <filesystem>
+#include <sstream>
 
-void read_txt_file(const std::string root_dir, const std::string path) {
-    std::ifstream file;
-    std::string line;
-    std::string fpath = root_dir + path;
+using std::ifstream; using std::ostringstream;
 
-    file.open(fpath);
-
-    if (file.is_open()) {
-        while (std::getline(file, line)) {
-            std::cout << line << std::endl;
-        }
+std::string readFileIntoString(const std::string& path) {
+    auto ss = ostringstream{};
+    ifstream input_file(path);
+    if (!input_file.is_open()) {
+        std::cerr << "Could not open the file - '"
+             << path << "'" << std::endl;
+        exit(EXIT_FAILURE);
     }
-
-    file.close();
+    ss << input_file.rdbuf();
+    return ss.str();
 }
 
 std::string get_exe_root_dir() {

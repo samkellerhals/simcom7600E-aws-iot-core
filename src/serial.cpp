@@ -82,7 +82,7 @@ void write_to_serial(HANDLE serial_handle, std::string data) {
     if(!WriteFile(serial_handle, to_write_lpc, bytes_to_write, &bytes_written, NULL)) {
         std::cout << "Error writing to the serial port." << std::endl;
     } else {
-        std::cout << "Wrote " << bytes_to_write << " bytes to serial port.\n" << std::endl;
+        std::cout << "\nWrote " << bytes_to_write << " bytes to serial port.\n" << std::endl;
     }
 }
 

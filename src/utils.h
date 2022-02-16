@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-void read_txt_file(const std::string root_dir, const std::string path);
+std::string readFileIntoString(const std::string& path);
 
 std::string get_exe_root_dir();
 
