@@ -8,7 +8,9 @@ struct ApplicationConfig CONFIG = {
     "clientcert.pem", 
     "clientkey.pem", 
     "cacert.pem", 
-    "<enter-your-endpoint>"
+    "<enter-your-aws-endpoint>", // add your aws iot core REST API endpoint
+    "test_device", // add your aws iot core thing name
+    "aws/things/simcom7600_device01/" // add your mqtt topic
     };
 
 int main()
@@ -17,22 +19,25 @@ int main()
    
     if (is_handle_valid(CONFIG.port, serial_handle)) {
 
+        // SIMCOM setup
         set_serial_settings(serial_handle);        
         get_device_info(serial_handle);
         get_current_operator(serial_handle);
         get_signal_strength(serial_handle);
         load_certificates(serial_handle, CONFIG);
+        view_ssl_certificates(serial_handle);
+        setup_ssl_context(serial_handle);
         
-        // get_ssl_certificates(serial_handle);
-        // setup_ssl_context(serial_handle);
-        // TODO: start MQTTSERVICE
-        // TODO: acquire MQTT client
-        // TODO: enable SSL on client
+        // MQTT service setup
+        start_mqtt_service(serial_handle);
+        acquire_new_mqtt_client(serial_handle, CONFIG); // TODO: handle already open +CMQTTSTART: 23
+        configure_client_ssl(serial_handle); // TODO: handle client already used +CMQTTACCQ: 0,19
         // TODO: set will topic and will msg
-        // TODO: start MQTT connection
-        // TODO: subscribe to MQTT topic
-        // TODO: publish to MQTT topic that we are online
-        // TODO: start listening to incoming MQTT messages
+        start_mqtt_connection(serial_handle, CONFIG);
+        subscribe_to_mqtt_topic(serial_handle, CONFIG); // TODO: handle not supported operation (already connected?) +CMQTTCONNECT: 0,13
+        publish_to_mqtt_topic(serial_handle, CONFIG);
+
+        // TODO: Listen to incoming MQTT messages
 
         CloseHandle(serial_handle);
         return EXIT_SUCCESS;

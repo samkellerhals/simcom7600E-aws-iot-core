@@ -19,7 +19,7 @@ void get_current_operator(HANDLE serial_handle) {
     read_from_serial(serial_handle);
 }
 
-void get_ssl_certificates(HANDLE serial_handle) {
+void view_ssl_certificates(HANDLE serial_handle) {
     write_to_serial(serial_handle, "AT+CCERTLIST");
     read_from_serial(serial_handle);
 }
@@ -33,7 +33,9 @@ void setup_ssl_context(HANDLE serial_handle) {
         "\"clientkey\",0,\"clientkey.pem\"",
         };
     
-    for (int i = 0; i < sizeof(ssl_commands); i++) {
+    int num_commands = sizeof(ssl_commands)/sizeof(ssl_commands[0]);
+
+    for (int i = 0; i < num_commands; i++) {
 
         std::string at_command = "AT+CSSLCFG=" + ssl_commands[i];
 
@@ -80,15 +82,69 @@ void load_certificates(HANDLE serial_handle, ApplicationConfig config) {
     read_from_serial(serial_handle);
     write_to_serial(serial_handle, cacert);
     read_from_serial(serial_handle);
-
-    //TODO: list all certificates
 }
-/* TODO: add client certificate loading 
 
-Takes certificate struct.
+void start_mqtt_service(HANDLE serial_handle) {
+    write_to_serial(serial_handle, "AT+CMQTTSTART");
+    read_from_serial(serial_handle);
+}
 
-AT+CCERTDOWN="clientcert.pem",1220 // change size and send cetificate-pem.crt
-AT+CCERTDOWN="clientkey.pem",1675 // change size and send private.pem.key
-AT+CCERTDOWN="cacert.pem",1188 // change size and send AmazonRootCA1.pem
+void acquire_new_mqtt_client(HANDLE serial_handle, ApplicationConfig config) {
+    std::stringstream ss;
+    ss << "AT+CMQTTACCQ=0," << "\"" << config.thing_name << "\"" << ",1";
+    std::string cmd = ss.str();
+    write_to_serial(serial_handle, cmd);
+    read_from_serial(serial_handle);
+}
 
-*/
+void configure_client_ssl(HANDLE serial_handle) {
+    write_to_serial(serial_handle, "AT+CMQTTSSLCFG=0,0");
+    read_from_serial(serial_handle);
+}
+
+void start_mqtt_connection(HANDLE serial_handle, ApplicationConfig config) {
+    std::stringstream ss;
+    ss << "AT+CMQTTCONNECT=0," << "\"tcp://" << config.awsurl << ":8883\"" << ",60,1";
+    std::string cmd = ss.str();
+    write_to_serial(serial_handle, cmd);
+    read_from_serial(serial_handle);
+}
+
+void subscribe_to_mqtt_topic(HANDLE serial_handle, ApplicationConfig config) {
+    size_t topic_size = config.topic.size();
+    std::stringstream ss;
+    ss << "AT+CMQTTSUBTOPIC=0," << topic_size << ",1";
+    std::string cmd = ss.str();     
+    write_to_serial(serial_handle, cmd);
+    read_from_serial(serial_handle);
+
+    write_to_serial(serial_handle, config.topic);
+    read_from_serial(serial_handle);
+
+    write_to_serial(serial_handle, "AT+CMQTTSUB=0");
+    read_from_serial(serial_handle);
+}
+
+void publish_to_mqtt_topic(HANDLE serial_handle, ApplicationConfig config) {
+    std::stringstream init_pub_topic;
+    init_pub_topic << "AT+CMQTTTOPIC=0," << config.topic.size();
+    std::string init_pub_topic_cmd = init_pub_topic.str();
+    write_to_serial(serial_handle, init_pub_topic_cmd);
+    read_from_serial(serial_handle);
+
+    write_to_serial(serial_handle, config.topic);
+    read_from_serial(serial_handle);
+
+    std::string payload = "{\"message\":\"MQTT connection established between SIMCOM and AWS!\"}";
+    std::stringstream init_pub_payload;
+    init_pub_payload << "AT+CMQTTPAYLOAD=0," << payload.size();
+    std::string init_pub_payload_cmd = init_pub_payload.str();
+    write_to_serial(serial_handle, init_pub_payload_cmd);
+    read_from_serial(serial_handle);
+
+    write_to_serial(serial_handle, payload);
+    read_from_serial(serial_handle);
+
+    write_to_serial(serial_handle, "AT+CMQTTPUB=0,1,60");
+    read_from_serial(serial_handle);
+}
