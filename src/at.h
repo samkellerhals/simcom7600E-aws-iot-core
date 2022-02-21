@@ -10,6 +10,7 @@ struct ApplicationConfig {
     std::string awsurl;
     std::string thing_name;
     std::string topic;
+    std::string willmsg;
 };
 
 void get_device_info(HANDLE serial_handle);
@@ -24,4 +25,6 @@ void configure_client_ssl(HANDLE serial_handle);
 void start_mqtt_connection(HANDLE serial_handle, ApplicationConfig config);
 void subscribe_to_mqtt_topic(HANDLE serial_handle, ApplicationConfig config);
 void publish_to_mqtt_topic(HANDLE serial_handle, ApplicationConfig config);
+void set_will_topic(HANDLE serial_handle, ApplicationConfig config);
+void set_will_msg(HANDLE serial_handle, ApplicationConfig config);
 #endif

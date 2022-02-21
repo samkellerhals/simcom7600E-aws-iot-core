@@ -148,3 +148,29 @@ void publish_to_mqtt_topic(HANDLE serial_handle, ApplicationConfig config) {
     write_to_serial(serial_handle, "AT+CMQTTPUB=0,1,60");
     read_from_serial(serial_handle);
 }
+
+void set_will_topic(HANDLE serial_handle, ApplicationConfig config) {
+    size_t topic_size = config.topic.size();
+    std::stringstream init_will_topic;
+    init_will_topic << "AT+CMQTTWILLTOPIC=0," << topic_size;
+    std::string init_will_topic_cmd = init_will_topic.str();
+
+    write_to_serial(serial_handle, init_will_topic_cmd);
+    read_from_serial(serial_handle);
+
+    write_to_serial(serial_handle, config.topic);
+    read_from_serial(serial_handle);
+}
+
+void set_will_msg(HANDLE serial_handle, ApplicationConfig config) {
+    size_t willmsg_size = config.willmsg.size();
+    std::stringstream init_willmsg;
+    init_willmsg << "AT+CMQTTWILLMSG=0," << willmsg_size << ",1";
+    std::string init_willmsg_cmd = init_willmsg.str();
+
+    write_to_serial(serial_handle, init_willmsg_cmd);
+    read_from_serial(serial_handle);
+
+    write_to_serial(serial_handle, config.willmsg);
+    read_from_serial(serial_handle);
+}

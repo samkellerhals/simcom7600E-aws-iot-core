@@ -2,15 +2,17 @@
 #include <windows.h>
 #include "serial.h"
 #include "at.h"
+#include "utils.h"
 
 struct ApplicationConfig CONFIG = {
     "COM4", 
     "clientcert.pem", 
     "clientkey.pem", 
     "cacert.pem", 
-    "<enter-your-aws-endpoint>", // add your aws iot core REST API endpoint
-    "test_device", // add your aws iot core thing name
-    "aws/things/simcom7600_device01/" // add your mqtt topic
+    "<ENTER-YOUR-AWS-URL>", // Add your AWS URL here
+    "test_device",
+    "aws/things/simcom7600_device01/",
+    "{\"message\": \"SIMCOM7600 disconnected.\"}"
     };
 
 int main()
@@ -30,14 +32,15 @@ int main()
         
         // MQTT service setup
         start_mqtt_service(serial_handle);
-        acquire_new_mqtt_client(serial_handle, CONFIG); // TODO: handle already open +CMQTTSTART: 23
-        configure_client_ssl(serial_handle); // TODO: handle client already used +CMQTTACCQ: 0,19
-        // TODO: set will topic and will msg
+        acquire_new_mqtt_client(serial_handle, CONFIG); 
+        configure_client_ssl(serial_handle); 
+        set_will_topic(serial_handle, CONFIG);
+        set_will_msg(serial_handle, CONFIG);
         start_mqtt_connection(serial_handle, CONFIG);
-        subscribe_to_mqtt_topic(serial_handle, CONFIG); // TODO: handle not supported operation (already connected?) +CMQTTCONNECT: 0,13
+        subscribe_to_mqtt_topic(serial_handle, CONFIG);
         publish_to_mqtt_topic(serial_handle, CONFIG);
 
-        // TODO: Listen to incoming MQTT messages
+        // TODO: Listen to incoming MQTT messages in a loop
 
         CloseHandle(serial_handle);
         return EXIT_SUCCESS;
