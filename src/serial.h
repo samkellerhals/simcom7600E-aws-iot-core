@@ -14,4 +14,6 @@ void write_to_serial(HANDLE serial_handle, std::string data);
 
 void read_from_serial(HANDLE serial_handle);
 
+void listen_for_incoming_messages(HANDLE serial_handle);
+
 #endif

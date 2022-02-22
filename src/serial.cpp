@@ -1,6 +1,8 @@
 #include <iostream>
 #include <windows.h>
 #include <string.h>
+#include <chrono>
+#include <thread>
 #include "serial.h"
 
 #define CRLF "\r\n";
@@ -94,4 +96,11 @@ void read_from_serial(HANDLE serial_handle) {
         std::cout << "Error reading from serial port.";
     }
     std::cout << buffer;
+}
+
+void listen_for_incoming_messages(HANDLE serial_handle) {
+    for (; true; ) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        read_from_serial(serial_handle);
+        }
 }

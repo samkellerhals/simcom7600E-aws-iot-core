@@ -9,7 +9,7 @@ struct ApplicationConfig CONFIG = {
     "clientcert.pem", 
     "clientkey.pem", 
     "cacert.pem", 
-    "<ENTER-YOUR-AWS-URL>", // Add your AWS URL here
+    "<AWSURL>", // Add your AWS URL here
     "test_device",
     "aws/things/simcom7600_device01/",
     "{\"message\": \"SIMCOM7600 disconnected.\"}"
@@ -40,7 +40,8 @@ int main()
         subscribe_to_mqtt_topic(serial_handle, CONFIG);
         publish_to_mqtt_topic(serial_handle, CONFIG);
 
-        // TODO: Listen to incoming MQTT messages in a loop
+        // Listen to incoming MQTT messages
+        listen_for_incoming_messages(serial_handle);
 
         CloseHandle(serial_handle);
         return EXIT_SUCCESS;
