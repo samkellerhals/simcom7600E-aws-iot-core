@@ -5,6 +5,8 @@ A utility to setup the SIMCOM7600 with AWS IoT Core.
 This program will establish an MQTT connection between the SIMCOM7600 module and AWS IoT core, subscribe to a topic and publish a message to it.
 It will then listen for incoming messages to this topic - which can be tested using the AWS IoT Core MQTT test client.
 
+For a full guide on the process see: https://medium.com/@kellerhalssamuel/simcom7600-and-aws-iot-core-integration-guide-ceb7ff485289
+
 ## Requirements
 
 You need to setup a `thing` (device) on AWS IoT core, and generate the required certificates (`pem` files).
@@ -14,7 +16,7 @@ The following certificates are required in the root of this repository, and can 
 - A device certificate: `clientcert.pem`
 - The private key certificate: `clientkey.pem`
 
-For more information on setting up a new device on AWS and the corresponding certificates see this article: https://www.hackster.io/victorffs/connecting-sim7600x-h-to-aws-using-mqtt-and-at-commands-2a693c
+For more information on setting up a new device on AWS and the corresponding certificates see this article.
 
 ## Configuration
 
